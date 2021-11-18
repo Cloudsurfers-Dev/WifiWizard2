@@ -487,6 +487,14 @@ public class WifiWizard2 extends CordovaPlugin {
            Log.d(TAG, "WiFi not available");
            callbackContext.error("WiFi not available");
           }
+          @Override
+          public void onLost(@NonNull Network network) {
+            super.onLost(network);
+            try {
+              connectivityManager.bindProcessToNetwork(null);
+              connectivityManager.unregisterNetworkCallback(networkCallback);
+            } catch (Exception e) {}
+          }
         };
 
         WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder();
@@ -507,7 +515,7 @@ public class WifiWizard2 extends CordovaPlugin {
         NetworkRequest nr = networkRequestBuilder1.build();
         ConnectivityManager cm = (ConnectivityManager) cordova.getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         //timeout add because "No devices found" wasn't handled correct and doesn't throw Unavailable
-        if (withPattern)
+        if (withPattern && API_VERSION < 30)
           cm.requestNetwork(nr, this.networkCallback);
         else
           cm.requestNetwork(nr, this.networkCallback, 15000);

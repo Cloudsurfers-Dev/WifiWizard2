@@ -488,7 +488,7 @@ public class WifiWizard2 extends CordovaPlugin {
            callbackContext.error("WiFi not available");
           }
           @Override
-          public void onLost(@NonNull Network network) {
+          public void onLost(Network network) {
             super.onLost(network);
             try {
               connectivityManager.bindProcessToNetwork(null);
